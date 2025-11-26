@@ -1,0 +1,14 @@
+same as Q2 then change App.js
+
+
+import logo from './logo.svg';
+import './App.css';
+
+function Welcome(){
+  return(
+    <div>
+      <h1>HEllo World</h1>
+    </div>
+  );
+}
+export default Welcome;
