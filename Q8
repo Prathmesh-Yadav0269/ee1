@@ -1,0 +1,168 @@
+// server.js
+
+const express = require("express");
+const mongoose = require("mongoose");
+const cors = require("cors");
+
+const app = express();
+app.use(express.json());
+app.use(cors());
+
+// Connect MongoDB
+mongoose.connect("mongodb://127.0.0.1:27017/mydb");
+
+// Schema + Model
+const Item = mongoose.model("Item", { name: String });
+
+/* ------------------- CRUD ------------------- */
+
+// CREATE
+app.post("/add-item", async (req, res) => {
+  const item = new Item({ name: req.body.name });
+  await item.save();
+  res.send("Item added");
+});
+
+// READ ALL
+app.get("/items", async (req, res) => {
+  const items = await Item.find();
+  res.json(items);
+});
+
+// UPDATE
+app.put("/update-item/:id", async (req, res) => {
+  await Item.findByIdAndUpdate(req.params.id, { name: req.body.name });
+  res.send("Item updated");
+});
+
+// DELETE
+app.delete("/delete-item/:id", async (req, res) => {
+  await Item.findByIdAndDelete(req.params.id);
+  res.send("Item deleted");
+});
+
+// Start Server
+app.listen(5000, () => console.log("Server running on port 5000"));
+
+
+
+
+
+
+
+
+
+// CRUD.jsx
+import { useState, useEffect } from "react";
+import axios from "axios";
+
+export default function CRUD() {
+  const [items, setItems] = useState([]);
+  const [name, setName] = useState("");
+  const [newName, setNewName] = useState("");
+
+  // Load all items
+  const load = async () => {
+    const res = await axios.get("http://localhost:5000/items");
+    setItems(res.data);
+  };
+
+  useEffect(() => {
+    load();
+  }, []);
+
+  // Insert
+  const insert = async () => {
+    await axios.post("http://localhost:5000/add-item", { name });
+    setName("");
+    load();
+  };
+
+  // Update
+  const updateItem = async (id) => {
+    await axios.put(`http://localhost:5000/update-item/${id}`, {
+      name: newName,
+    });
+    setNewName("");
+    load();
+  };
+
+  // Delete
+  const deleteItem = async (id) => {
+    await axios.delete(`http://localhost:5000/delete-item/${id}`);
+    load();
+  };
+
+  return (
+    <div>
+      <h1>CRUD Operation</h1>
+
+      {/* Insert */}
+      <input
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+        placeholder="Enter name"
+      />
+      <button onClick={insert}>Add</button>
+
+      <br /><br />
+
+      {/* Update input */}
+      <input
+        value={newName}
+        onChange={(e) => setNewName(e.target.value)}
+        placeholder="Enter new name"
+      />
+
+      <ul>
+        {items.map((item) => (
+          <li key={item._id}>
+            {item.name}
+
+            <button onClick={() => updateItem(item._id)}>Update</button>
+            <button onClick={() => deleteItem(item._id)}>Delete</button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+
+
+// app.js
+
+import CRUD from "./CRUD";
+
+function App() {
+  return (
+    <div>
+      <CRUD />
+    </div>
+  );
+}
+
+export default App;
+
+
+// index.js
+
+
+
+import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./App";
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(<App />);
+
+
+
+
+
+
+
+// mongodb url = mongodb://127.0.0.1:27017/mydb
+
+
+
