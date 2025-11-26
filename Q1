@@ -1,0 +1,21 @@
+$ git config --global user.name "Prathmesh-Yadav0269"
+
+git config --global user.email "yadavprathmesh88180269@gmail.com"
+
+
+git config --list
+
+create folder and open with code 
+git init 
+git -v
+git clone "https://github.com/Prathmesh-Yadav0269/ee1.git"
+
+git status
+
+git add .
+
+git commit -m "ee1"
+
+git push origin main
+
+git status
