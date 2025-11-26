@@ -1,0 +1,17 @@
+// f
+
+npx create-react-app myapp
+cd myapp
+npm install react-router-dom
+npm install axios
+npm start
+
+
+//b 
+npm init -y
+npm install express mongoose cors
+npm install -g nodemon
+
+
+//st backend
+nodemon server.js
