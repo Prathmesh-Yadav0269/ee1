@@ -1,0 +1,110 @@
+npm install axios
+
+// server.js
+
+const express = require("express");
+const mongoose = require("mongoose");
+const cors = require("cors");
+
+const app = express();
+app.use(express.json());
+app.use(cors());
+
+// Connect to MongoDB
+mongoose.connect("mongodb://127.0.0.1:27017/mydb");
+
+// Create Item model
+const Item = mongoose.model("Item", { name: String });
+
+// POST API to insert item
+app.post("/add-item", async (req, res) => {
+  const item = new Item({ name: req.body.name });
+  await item.save();
+  res.send("Item inserted!");
+});
+
+// Optional: GET API to check items
+app.get("/items", async (req, res) => {
+  const items = await Item.find();
+  res.json(items);
+});
+
+// Start server
+app.listen(5000, () => console.log("Server running on port 5000"));
+
+
+
+
+
+
+
+
+
+
+// AddItem.jsx
+import { useState } from "react";
+import axios from "axios";
+
+export default function AddItem() {
+  const [name, setName] = useState("");
+
+  const add = async (e) => {
+    e.preventDefault();
+    await axios.post("http://localhost:5000/add-item", { name });
+    alert("Item inserted!");
+    setName("");
+  };
+
+  return (
+    <form onSubmit={add}>
+      <input
+        placeholder="Enter item name"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+      />
+      <button>Add</button>
+    </form>
+  );
+}
+
+
+
+
+
+
+
+//app.js
+
+import AddItem from "./AddItem";
+
+function App() {
+  return (
+    <div>
+      <h2>Insert Item into MongoDB</h2>
+      <AddItem />
+    </div>
+  );
+}
+
+export default App;
+
+
+
+
+// index.js 
+
+import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./App";
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(<App />);
+
+
+//run 
+node server.js 
+npm start
+
+mongo url = mongodb://127.0.0.1:27017/mydb
+
+
